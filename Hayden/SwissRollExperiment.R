@@ -59,12 +59,16 @@ urerf_precision_list2 = list()
 urerf_precision_list3 = list()
 index = 1
 for (D in D_list2){
+  
+  # 0-1
   D_p1 = p_r_list(D_list1[[index]], data_label, at_K, num_of_points)$precisionList
   urerf_precision_list1[[index]] =  D_p1
   
+  # distance
   D_p2 = p_r_list(D_list2[[index]], data_label, at_K, num_of_points)$precisionList
   urerf_precision_list2[[index]] = D_p2
   
+  # isomap(distance) 
   D_p3 = p_r_list(D_list3[[index]], data_label, at_K, num_of_points)$precisionList
   urerf_precision_list3[[index]] = D_p3
   

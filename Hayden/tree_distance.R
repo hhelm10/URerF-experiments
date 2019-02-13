@@ -152,6 +152,7 @@ tree_distance <- function(Forest, type = 'no_transform') {
 
   # Normalize by the number of trees
   dissimilarity <- dissimilarity / n_trees
+  print("end forest")
   return(dissimilarity)
 }
 
