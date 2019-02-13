@@ -37,7 +37,7 @@ rota=replicate(9, runif(9, 1, 10))
 rota_high_dim_noise_data=high_dim_noise_data%*%rota
 
 
-g_noise1=Urerf(rota_high_dim_noise_data, trees = 300, Progress = TRUE, mtry=9, splitCrit = "bicfast")
+g_noise1=Urerf(rota_high_dim_noise_data, trees = 300, Progress = TRUE, mtry=9, splitCrit = "bicfast", normalizeData = FALSE)
 W_noise1=g_noise1$similarityMatrix
 D_rf_noise1=1-W_noise1
 D_rf_noise1_p_r_list = p_r_list(D_rf_noise1, data_label, at_K, num_of_points)
@@ -60,6 +60,7 @@ D_umap_noise1_p_r_list = p_r_list(D_umap_noise1, data_label, at_K, num_of_points
 D_umap_noise1_precision_list= D_umap_noise1_p_r_list$precisionList
 D_umap_noise1_recall_list=D_umap_noise1_p_r_list$recallList
 
+save(D_rf_noise1_precision_list, D_iso_noise1_precision_list, D_umap_noise1_precision_list, file="exp_2_e.Rdata")
 
 
 

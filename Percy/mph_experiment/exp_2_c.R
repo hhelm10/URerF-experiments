@@ -62,4 +62,5 @@ D_umap_noise1_p_r_list = p_r_list(D_umap_noise1, data_label, at_K, num_of_points
 D_umap_noise1_precision_list= D_umap_noise1_p_r_list$precisionList
 D_umap_noise1_recall_list=D_umap_noise1_p_r_list$recallList
 
+save(D_rf_noise1_precision_list, D_iso_noise1_precision_list, D_umap_noise1_precision_list, file="exp_2_c.Rdata")
 

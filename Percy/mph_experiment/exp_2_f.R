@@ -40,7 +40,7 @@ normalizeData <- function(X) {
   X <- sweep(X, 2, apply(X, 2, min), "-")
   sweep(X, 2, apply(X, 2, max), "/")
 }
-high_dim_noise_data=normalizeData(rota_high_dim_noise_data)
+rota_high_dim_noise_data=normalizeData(rota_high_dim_noise_data)
 
 
 g_noise1=Urerf(rota_high_dim_noise_data, trees = 300, Progress = TRUE, splitCrit = "bicfast")
@@ -65,3 +65,6 @@ D_umap_noise1=as.matrix(dist(a_noise1$layout))
 D_umap_noise1_p_r_list = p_r_list(D_umap_noise1, data_label, at_K, num_of_points)
 D_umap_noise1_precision_list= D_umap_noise1_p_r_list$precisionList
 D_umap_noise1_recall_list=D_umap_noise1_p_r_list$recallList
+
+
+save(D_rf_noise1_precision_list, D_iso_noise1_precision_list, D_umap_noise1_precision_list, file="exp_2_f.Rdata")

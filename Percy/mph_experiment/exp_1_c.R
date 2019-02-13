@@ -1,4 +1,4 @@
-# no normalization, no noise, rotation
+#normalization, no noise, rotation, default urerf
 library(scatterplot3d)
 library(rgl)
 library(rerf)
@@ -21,6 +21,13 @@ plot3d(rota_samples[,1], rota_samples[,2], rota_samples[,3])
 data_label= c(rep('1', num_of_points/5), rep('2', num_of_points/5), rep('3', num_of_points/5), rep('4', num_of_points/5), rep('5', num_of_points/5))
 at_K=seq(5, 45, by=10)
 
+normalizeData <- function(X) {
+  X <- sweep(X, 2, apply(X, 2, min), "-")
+  sweep(X, 2, apply(X, 2, max), "/")
+}
+
+data=normalizeData(data)
+
 #isomap
 D_eucd = as.matrix(dist(data))
 iso_dist = as.matrix(isomapdist(D_eucd, k=10))
@@ -39,11 +46,11 @@ D_umap_precision_list= D_umap_p_r_list$precisionList
 D_umap_recall_list=D_umap_p_r_list$recallList
 
 #urerf
-g=Urerf(data, trees = 300, Progress = TRUE, splitCrit = "bicfast", normalizeData = FALSE)
+g=Urerf(data, trees = 300, Progress = TRUE, splitCrit = "bicfast")
 W=g$similarityMatrix
 D_rf=1-W
 D_rf_p_r_list = p_r_list(D_rf, data_label, at_K, num_of_points)
 D_rf_precision_list= D_rf_p_r_list$precisionList
 D_rf_recall_list=D_rf_p_r_list$recallList
 
-save(D_rf_precision_list, D_iso_precision_list, D_umap_precision_list, file="exp_1_a.Rdata")
+save(D_rf_precision_list, D_iso_precision_list, D_umap_precision_list, file="exp_1_c.Rdata")

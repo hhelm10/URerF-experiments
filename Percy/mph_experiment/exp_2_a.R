@@ -4,6 +4,7 @@ library(rgl)
 library(rerf)
 library(umap)
 library(vegan)
+library(MASS)
 source("precision_recall.R")
 
 N=1000
@@ -33,7 +34,7 @@ at_K=seq(5, 45, by=10)
 
 
 high_dim_noise_data=highdimnoise(9)
-g_noise1=Urerf(high_dim_noise_data, trees = 300, Progress = TRUE, splitCrit = "bicfast")
+g_noise1=Urerf(high_dim_noise_data, trees = 300, Progress = TRUE, splitCrit = "bicfast", normalizeData = FALSE)
 W_noise1=g_noise1$similarityMatrix
 D_rf_noise1=1-W_noise1
 D_rf_noise1_p_r_list = p_r_list(D_rf_noise1, data_label, at_K, num_of_points)
@@ -56,6 +57,6 @@ D_umap_noise1_p_r_list = p_r_list(D_umap_noise1, data_label, at_K, num_of_points
 D_umap_noise1_precision_list= D_umap_noise1_p_r_list$precisionList
 D_umap_noise1_recall_list=D_umap_noise1_p_r_list$recallList
 
-
+save(D_rf_noise1_precision_list, D_iso_noise1_precision_list, D_umap_noise1_precision_list, file="exp_2_a.Rdata")
 
 

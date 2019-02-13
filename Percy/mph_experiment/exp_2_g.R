@@ -1,10 +1,13 @@
-#normalized, without rotation, default urerf paramters, with noise
+#normalized, with rotation, default urerf parameters, with noise, but smaller rotation and smaller noise
 library(scatterplot3d)
 library(rgl)
 library(rerf)
 library(umap)
 library(vegan)
+library(Matrix)
 source("precision_recall.R")
+
+set.seed(1)
 
 N=1000
 num_of_points=N
@@ -31,16 +34,20 @@ highdimnoise<-function(high_dim){
 data_label= c(rep('1', num_of_points/5), rep('2', num_of_points/5), rep('3', num_of_points/5), rep('4', num_of_points/5), rep('5', num_of_points/5))
 at_K=seq(5, 45, by=10)
 
-#normalize the data
-high_dim_noise_data=highdimnoise(9)
+high_dim=9
+
+high_dim_noise_data=highdimnoise(high_dim)
+rota=replicate(high_dim, rep(1,high_dim))
+rota_high_dim_noise_data=high_dim_noise_data%*%rota
+
 normalizeData <- function(X) {
   X <- sweep(X, 2, apply(X, 2, min), "-")
   sweep(X, 2, apply(X, 2, max), "/")
 }
-high_dim_noise_data=normalizeData(high_dim_noise_data)
+rota_high_dim_noise_data=normalizeData(rota_high_dim_noise_data)
 
-#urerf
-g_noise1=Urerf(high_dim_noise_data, trees = 300, Progress = TRUE, splitCrit = "bicfast")
+
+g_noise1=Urerf(rota_high_dim_noise_data, trees = 300, Progress = TRUE, splitCrit = "bicfast")
 W_noise1=g_noise1$similarityMatrix
 D_rf_noise1=1-W_noise1
 D_rf_noise1_p_r_list = p_r_list(D_rf_noise1, data_label, at_K, num_of_points)
@@ -48,8 +55,8 @@ D_rf_noise1_precision_list= D_rf_noise1_p_r_list$precisionList
 D_rf_noise1_recall_list=D_rf_noise1_p_r_list$recallList
 
 # generate D_eucd
-D_eucd_noise1 = as.matrix(dist(high_dim_noise_data))
-iso_dist_noise1 = as.matrix(isomapdist(D_eucd_noise1, k=5))
+D_eucd_noise1 = as.matrix(dist(rota_high_dim_noise_data))
+iso_dist_noise1 = as.matrix(isomapdist(D_eucd_noise1, k=10))
 D_iso_noise1_p_r_list = p_r_list(iso_dist_noise1, data_label, at_K, num_of_points)
 D_iso_noise1_precision_list= D_iso_noise1_p_r_list$precisionList
 D_iso_noise1_recall_list=D_iso_noise1_p_r_list$recallList
@@ -57,11 +64,11 @@ D_iso_noise1_recall_list=D_iso_noise1_p_r_list$recallList
 #umap
 custom.settings = umap.defaults
 custom.settings$n_neighbors=length(data_label)
-a_noise1 = umap(high_dim_noise_data, config = custom.settings)
+a_noise1 = umap(rota_high_dim_noise_data, config = custom.settings)
 D_umap_noise1=as.matrix(dist(a_noise1$layout))
 D_umap_noise1_p_r_list = p_r_list(D_umap_noise1, data_label, at_K, num_of_points)
 D_umap_noise1_precision_list= D_umap_noise1_p_r_list$precisionList
 D_umap_noise1_recall_list=D_umap_noise1_p_r_list$recallList
 
-save(D_rf_noise1_precision_list, D_iso_noise1_precision_list, D_umap_noise1_precision_list, file="exp_2_b.Rdata")
 
+save(D_rf_noise1_precision_list, D_iso_noise1_precision_list, D_umap_noise1_precision_list, file="exp_2_g.Rdata")

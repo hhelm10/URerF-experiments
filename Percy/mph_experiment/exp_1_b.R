@@ -1,4 +1,4 @@
-# no normalization
+# no normalization, no noise, rotation
 # increase mtry
 library(scatterplot3d)
 library(rgl)
@@ -24,7 +24,7 @@ at_K=seq(5, 45, by=10)
 
 #isomap
 D_eucd = as.matrix(dist(data))
-iso_dist = as.matrix(isomapdist(D_eucd, k=7))
+iso_dist = as.matrix(isomapdist(D_eucd, k=15))
 D_iso_p_r_list = p_r_list(iso_dist, data_label, at_K, num_of_points)
 D_iso_precision_list= D_iso_p_r_list$precisionList
 D_iso_recall_list=D_iso_p_r_list$recallList
@@ -40,11 +40,12 @@ D_umap_precision_list= D_umap_p_r_list$precisionList
 D_umap_recall_list=D_umap_p_r_list$recallList
 
 #urerf
-g=Urerf(data, trees = 300, Progress = TRUE, mtry=3, splitCrit = "bicfast")
+g=Urerf(data, trees = 300, Progress = TRUE, mtry=3, splitCrit = "bicfast", normalizeData = FALSE)
 W=g$similarityMatrix
 D_rf=1-W
 D_rf_p_r_list = p_r_list(D_rf, data_label, at_K, num_of_points)
 D_rf_precision_list= D_rf_p_r_list$precisionList
 D_rf_recall_list=D_rf_p_r_list$recallList
 
+save(D_rf_precision_list, D_iso_precision_list, D_umap_precision_list, file="exp_1_b.Rdata")
 
